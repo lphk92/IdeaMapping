@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <title>Non-standard Idea Mapping</title>
+    </head>
+
+    <style>
+    #map 
+    {
+        height: 500px;
+        width: 500px;
+        border: 1px dotted;
+    }
+    </style>
+
+    <body>
+        <div id="map"></div>
+    </body>
+
+    <script src="kinetic.js" type="text/javascript"></script>
+    <script type="text/javascript">
+    function generateCircle(id, color)
+    {
+        var circle = new Kinetic.Circle({
+            name: id,
+            x: 50,
+            y: 50,
+            radius: 48,
+            fill: color,
+            stroke: 'black',
+            strokeWidth: 2,
+            draggable: true
+        });
+
+        return circle;
+    }
+
+    var stage = new Kinetic.Stage({
+        container: 'map',
+        width: 500,
+        height: 500
+    });
+
+    var layer = new Kinetic.Layer();
+
+
+    layer.add(generateCircle('red', 'red'));
+    layer.add(generateCircle('green', 'green'));
+    stage.add(layer);
+
+    alert("Loaded");
+    </script>
+
+</html>

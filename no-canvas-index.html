@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <title>Non-standard Idea Mapping</title>
+    </head>
+
+    <style>
+    #idea1
+    {
+        height: 50px;
+        width: 100px;
+        background-color: red;
+        text-align: center;
+
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+    </style>
+
+    <body>
+        <div id="idea1" class="idea" draggable="true">
+            Test Text
+        </div>
+
+        <div class="idea" draggable="true">
+            Idea 2
+        </div>
+    </body>
+
+    <script type="text/javascript">
+    function handleDragStart(e)
+    {
+        var style = window.getComputedStyle(e.target, null);
+        e.dataTransfer.setData("text/plain",
+            (parseInt(style.getPropertyValue("left"), 10) - e.clientX) + ',' +
+            (parseInt(style.getPropertyValue("top"), 10) - e.clientY));
+    }
+
+    function handleDragOver(e)
+    {
+        event.preventDefault();
+        return false;
+    }
+
+    function handleDrop(e)
+    {
+        var offset = e.dataTransfer.getData("text/plain").split(',');
+        var elem = document.querySelector('#idea1');
+        var elem = e.target;
+        alert(elem);
+        elem.style.left = (e.clientX + parseInt(offset[0], 10)) + 'px';
+        elem.style.top = (e.clientY + parseInt(offset[1], 10)) + 'px';
+        e.preventDefault();
+    }
+
+    var idea = document.querySelector('#idea1');
+    idea.addEventListener('dragstart', handleDragStart, false);
+    document.body.addEventListener('dragover', handleDragOver, false);
+    document.body.addEventListener('drop', handleDrop, false);
+
+    alert("Loaded");
+    </script>
+
+</html>
