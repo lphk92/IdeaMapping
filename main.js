@@ -48,6 +48,30 @@ function generateCircle(shapeId, color)
     return circle;
 }
 
+function generateText(shapeId, textString)
+{
+    var text = new Kinetic.Text({
+        id: shapeId,
+        x: Math.random() * 700 + 50,
+        y: Math.random() * 500 + 50,
+        text: textString,
+        textFill: 'black',
+        fill: 'white',
+        fontFamily: 'Arial',
+        fontSize: 24,
+        padding: 8,
+        cornerRadius: 8,
+        stroke: 'black',
+        strokeWidth: 2,
+        draggable: true
+    });
+
+    text.on("dragmove", function() { redrawConnections(shapeId); });
+    text.nonRadial = true;
+
+    return text;
+}
+
 function drawConnection(shapeId1, shapeId2)
 {
     var shape1 = stage.get('#' + shapeId1)[0];
@@ -58,6 +82,17 @@ function drawConnection(shapeId1, shapeId2)
 
     var shape2x = shape2.getPosition().x;
     var shape2y = shape2.getPosition().y;
+
+    if (shape1.nonRadial)
+    {
+        shape1x = shape1x + shape1.getWidth()/2;
+        shape1y = shape1y + shape1.getHeight()/2;
+    }
+    if (shape2.nonRadial)
+    {
+        shape2x = shape2x + shape2.getWidth()/2;
+        shape2y = shape2y + shape2.getHeight()/2;
+    }
 
     var line = stage.get('#' + shapeId1 + "-" + shapeId2)[0];
     if (line)
@@ -105,6 +140,7 @@ function addIdea(title, shape)
     }
 }
 
+addIdea("Jim", generateText("jim", "Jim"));
 addIdea("Red Idea", generateCircle('red', 'red'));
 addIdea("Green Idea", generateCircle('green', 'green'));
 addIdea("Blue Idea", generateCircle('blue', 'blue'));
