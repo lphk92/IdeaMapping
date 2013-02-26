@@ -30,6 +30,25 @@ function redrawConnections(shapeId)
     }
 }
 
+function getShape(shapeId, layer)
+{
+    return layer.get("#" + shapeId)[0];
+}
+
+var ideaGlow = {
+        color: 'blue',
+        blur: 40,
+        offset: [0, 0],
+        opacity: 1.0
+        };
+
+var connectionGlow = {
+        color: 'red',
+        blur: 20,
+        offset: [0, 0],
+        opacity: 1.0
+        };
+
 function generateCircle(shapeId, color)
 {
     var circle = new Kinetic.Circle({
@@ -44,6 +63,8 @@ function generateCircle(shapeId, color)
     });
 
     circle.on("dragmove", function() { redrawConnections(shapeId); });
+    circle.on("mouseenter", function() { this.setShadow(ideaGlow); ideaLayer.draw(); });
+    circle.on("mouseleave", function() { this.attrs.shadow = null; ideaLayer.draw(); });
 
     return circle;
 }
@@ -67,6 +88,8 @@ function generateText(shapeId, textString)
     });
 
     text.on("dragmove", function() { redrawConnections(shapeId); });
+    text.on("mouseenter", function() { this.setShadow(ideaGlow); ideaLayer.draw(); });
+    text.on("mouseleave", function() { this.attrs.shadow = null; ideaLayer.draw(); });
     text.nonRadial = true;
 
     return text;
@@ -108,12 +131,16 @@ function drawConnection(shapeId1, shapeId2)
         }
     }
 
+    var connectionId = shapeId1 + "-" + shapeId2;
     line = new Kinetic.Line({
-        id: shapeId1 + "-" + shapeId2,
+        id: connectionId,
         points: [shape1x, shape1y, shape2x, shape2y],
         stroke: 'black',
-        strokeWidth: 2
+        strokeWidth: 3
     });
+
+    line.on("mouseenter", function() { this.setShadow(connectionGlow); connectionLayer.draw(); });
+    line.on("mouseleave", function() { this.attrs.shadow = null; connectionLayer.draw(); });
 
     connectionLayer.add(line);
     connectionLayer.draw();
