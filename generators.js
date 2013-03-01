@@ -5,6 +5,13 @@ var ideaGlow = {
         opacity: 1.0
         };
 
+var selectedGlow = {
+        color: 'orange',
+        blur: 40,
+        offset: [0, 0],
+        opacity: 1.0
+        };
+
 var connectionGlow = {
         color: 'red',
         blur: 20,
@@ -21,7 +28,7 @@ var nullGlow = {
 
 function generateCircle(shapeId, color)
 {
-    var circle = new Kinetic.Circle({
+    return generateCircleFromConfig({
         id: shapeId,
         name: "circle",
         x: Math.random() * 700 + 50,
@@ -32,17 +39,11 @@ function generateCircle(shapeId, color)
         strokeWidth: 2,
         draggable: true
     });
-    
-    circle.on("dragmove", function() { redrawConnections(this.getId()); });
-    circle.on("mouseenter", function() { this.setShadow(ideaGlow); ideaLayer.draw(); });
-    circle.on("mouseleave", function() { this.setShadow(nullGlow); ideaLayer.draw(); });
-
-    return circle;
 }
 
 function generateText(shapeId, textString)
 {
-    var text = new Kinetic.Text({
+    return generateTextFromConfig({
         id: shapeId,
         name: "text",
         x: Math.random() * 700 + 50,
@@ -58,29 +59,19 @@ function generateText(shapeId, textString)
         strokeWidth: 2,
         draggable: true
     });
-    
-    text.on("dragmove", function() { redrawConnections(this.getId()); });
-    text.on("mouseenter", function() { this.setShadow(ideaGlow); ideaLayer.draw(); });
-    text.on("mouseleave", function() { this.setShadow(nullGlow); ideaLayer.draw(); });
-    return text;
 }
 
 function generateCircleFromConfig(config)
 {
-    var circle = new Kinetic.Circle(config);
-    circle.on("dragmove", function() { redrawConnections(this.getId()); });
-    circle.on("mouseenter", function() { this.setShadow(ideaGlow); ideaLayer.draw(); });
-    circle.on("mouseleave", function() { this.setShadow(nullGlow); ideaLayer.draw(); });
-
+    var circle = applyEventHandlers(new Kinetic.Circle(config));
+    circle.setShadow(nullGlow);
     return circle;
 }
 
 function generateTextFromConfig(config)
 {
-    var text = new Kinetic.Text(config);
-    text.on("dragmove", function() { redrawConnections(this.getId()); });
-    text.on("mouseenter", function() { this.setShadow(ideaGlow); ideaLayer.draw(); });
-    text.on("mouseleave", function() { this.setShadow(nullGlow); ideaLayer.draw(); });
+    var text = applyEventHandlers(new Kinetic.Text(config));
+    text.setShadow(nullGlow);
     return text;
 }
 
@@ -115,4 +106,18 @@ function generateConnection(shape1, shape2)
     line.on("mouseleave", function() { this.setShadow(nullGlow); connectionLayer.draw(); });
     
     return line;
+}
+
+function applyEventHandlers(shape)
+{
+    shape.on("dragmove", function() { redrawConnections(this.getId()); });
+    shape.on("dragend", function() { saveMap("test"); });
+    shape.on("mouseenter", function() { this.setShadow(ideaGlow); ideaLayer.draw(); });
+    shape.on("mouseleave", function() { this.setShadow(this.selected ? selectedGlow : nullGlow); ideaLayer.draw(); });    
+    shape.on("click", function() {
+        shape.selected = !shape.selected;
+        shape.setShadow(shape.selected ? selectedGlow : nullGlow);
+        });
+    
+    return shape;
 }

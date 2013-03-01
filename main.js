@@ -32,18 +32,22 @@ function saveMap(mapName)
     }
 
     localStorage[mapName] = JSON.stringify(currentMap);
-    alert("Save Successful");
+}
+
+function clearMap()
+{
+    ideaLayer.removeChildren();
+    ideaLayer.clear();
+
+    connectionLayer.removeChildren();
+    connectionLayer.clear();
 }
 
 function loadMap(mapName)
 {
     if (localStorage[mapName])
     {
-        ideaLayer.removeChildren();
-        ideaLayer.clear();
-
-        connectionLayer.removeChildren();
-        connectionLayer.clear();
+        clearMap();
 
         var map = JSON.parse(localStorage[mapName]);
         for (var i = 0 ; i < map.ideaAttrs.length ; i++)
@@ -157,6 +161,8 @@ function removeConnection(connectionId)
 
 function addIdea(shape)
 {
+    shape.selected = false;
+
     ideaLayer.add(shape);
     ideaLayer.draw();
 
@@ -178,6 +184,8 @@ function addIdea(shape)
             }
         }
     }
+
+    saveMap("test");
 }
 
 loadMap("test");
@@ -195,9 +203,8 @@ document.getElementById("addCircle").addEventListener('click', function() {
 });
 
 document.getElementById("clearMap").addEventListener('click', function() {
-    //TODO: Write function for clearing the map
-});
-
-document.getElementById("saveMap").addEventListener('click', function() {
-    saveMap("test");
+    if(confirm("Are you sure you would like to clear the current map? You will be unable to reverse this operation"))
+    {
+        clearMap();
+    }
 });
