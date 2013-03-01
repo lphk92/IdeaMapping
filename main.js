@@ -192,8 +192,6 @@ function addIdea(shape)
     saveMap("test");
 }
 
-loadMap("test");
-
 document.getElementById("addIdea").addEventListener('click', function() {
     var text = document.getElementById("ideaText").value;
     var newIdea = generateText(generateUniqueId(), text);
@@ -211,6 +209,7 @@ document.getElementById("clearMap").addEventListener('click', function() {
     if(confirm("Are you sure you would like to clear the current map? You will be unable to reverse this operation"))
     {
         clearMap();
+        saveMap("test");
     }
 });
 
@@ -240,3 +239,5 @@ document.getElementById("connect").addEventListener('click', function() {
 
     saveMap("test");
 });
+
+loadMap("test");
