@@ -1,7 +1,7 @@
 var stage = new Kinetic.Stage({
-    container: 'map',
     height: 600,
-    width: 800
+    width: 800,
+    container: 'map'
 });
 
 var ideaLayer = new Kinetic.Layer();
@@ -65,6 +65,10 @@ function loadMap(mapName)
             else if (type == "polygon")
             {
                 idea = generatePolygonFromConfig(map.ideaAttrs[i]);
+            }
+            else if (type == "star")
+            {
+                idea = generateStarFromConfig(map.ideaAttrs[i]);
             }
 
             idea.ideaConnections = map[idea.getId()];
@@ -201,7 +205,21 @@ document.getElementById("addIdea").addEventListener('click', function() {
 document.getElementById("addShape").addEventListener('click', function() {
     var shapeType = document.getElementById("shape").value;
     var color = document.getElementById("shapeColor").value;
-    var newShape = shapeType == 0 ? generateCircle(generateUniqueId(), color) : generatePolygon(generateUniqueId(), color, shapeType);
+
+    var newShape;
+    if (shapeType == 0)
+    {
+        newShape = generateCircle(generateUniqueId(), color);
+    }
+    else if (shapeType < 10)
+    {
+        newShape = generatePolygon(generateUniqueId(), color, shapeType);
+    }
+    else if (shapeType > 10)
+    {
+        newShape = generateStar(generateUniqueId(), color, shapeType%10);
+    }
+
     addIdea(newShape);
 });
 
@@ -213,7 +231,7 @@ document.getElementById("clearMap").addEventListener('click', function() {
     }
 });
 
-document.getElementById("connect").addEventListener('click', function() {
+document.getElementById("connectIdeas").addEventListener('click', function() {
     var ideas = ideaLayer.getChildren();
     var selectedIdeas = new Array();
     for (var i = 0 ; i  < ideas.length ; i++)

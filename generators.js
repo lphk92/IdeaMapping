@@ -69,7 +69,25 @@ function generatePolygon(shapeId, color, sides)
         x: Math.random() * 700 + 50,
         y: Math.random() * 500 + 50,
         radius: 48,
+        rotationDeg: sides == 4 ? 45 : 0,
         sides: sides,
+        fill: color,
+        stroke: 'black',
+        strokeWidth: 2,
+        draggable: true
+    });
+}
+
+function generateStar(shapeId, color, points)
+{
+    return generateStarFromConfig({
+        id: shapeId,
+        name: "star",
+        x: Math.random() * 700 + 50,
+        y: Math.random() * 500 + 50,
+        outerRadius: 48,
+        innerRadius: 25,
+        numPoints: points,
         fill: color,
         stroke: 'black',
         strokeWidth: 2,
@@ -96,6 +114,13 @@ function generatePolygonFromConfig(config)
     var polygon = applyEventHandlers(new Kinetic.RegularPolygon(config));
     polygon.setShadow(nullGlow);
     return polygon;
+}
+
+function generateStarFromConfig(config)
+{
+    var star = applyEventHandlers(new Kinetic.Star(config));
+    star.setShadow(nullGlow);
+    return star;
 }
 
 function generateConnection(shape1, shape2)
