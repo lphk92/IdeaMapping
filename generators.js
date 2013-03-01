@@ -61,6 +61,22 @@ function generateText(shapeId, textString)
     });
 }
 
+function generatePolygon(shapeId, color, sides)
+{
+    return generatePolygonFromConfig({
+        id: shapeId,
+        name: "polygon",
+        x: Math.random() * 700 + 50,
+        y: Math.random() * 500 + 50,
+        radius: 48,
+        sides: sides,
+        fill: color,
+        stroke: 'black',
+        strokeWidth: 2,
+        draggable: true
+    });
+}
+
 function generateCircleFromConfig(config)
 {
     var circle = applyEventHandlers(new Kinetic.Circle(config));
@@ -73,6 +89,13 @@ function generateTextFromConfig(config)
     var text = applyEventHandlers(new Kinetic.Text(config));
     text.setShadow(nullGlow);
     return text;
+}
+
+function generatePolygonFromConfig(config)
+{
+    var polygon = applyEventHandlers(new Kinetic.RegularPolygon(config));
+    polygon.setShadow(nullGlow);
+    return polygon;
 }
 
 function generateConnection(shape1, shape2)

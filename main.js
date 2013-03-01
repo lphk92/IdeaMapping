@@ -62,6 +62,10 @@ function loadMap(mapName)
             {
                 idea = generateTextFromConfig(map.ideaAttrs[i]); 
             }
+            else if (type == "polygon")
+            {
+                idea = generatePolygonFromConfig(map.ideaAttrs[i]);
+            }
 
             idea.ideaConnections = map[idea.getId()];
             addIdea(idea);
@@ -123,7 +127,7 @@ function drawConnection(shapeId1, shapeId2)
     
     line = generateConnection(shape1, shape2);
 
-    line.on("dblclick", function() { removeConnection(this.getId()); });
+    line.on("dblclick", function() { removeConnection(this.getId()); saveMap("test"); });
 
     connectionLayer.add(line);
     connectionLayer.draw();
@@ -177,8 +181,8 @@ function addIdea(shape)
 
             if (idea.getId() != shape.getId())
             {
-                idea.ideaConnections[idea.ideaConnections.length] = shape.getId();
-                shape.ideaConnections[shape.ideaConnections.length] = idea.getId();
+                idea.ideaConnections.push(shape.getId());
+                shape.ideaConnections.push(idea.getId());
 
                 drawConnection(shape.getId(), idea.getId());
             }
@@ -196,10 +200,11 @@ document.getElementById("addIdea").addEventListener('click', function() {
     addIdea(newIdea); 
 });
 
-document.getElementById("addCircle").addEventListener('click', function() {
-    var color = document.getElementById("circleColor").value;
-    var newCircle = generateCircle(generateUniqueId(), color);
-    addIdea(newCircle);
+document.getElementById("addShape").addEventListener('click', function() {
+    var shapeType = document.getElementById("shape").value;
+    var color = document.getElementById("shapeColor").value;
+    var newShape = shapeType == 0 ? generateCircle(generateUniqueId(), color) : generatePolygon(generateUniqueId(), color, shapeType);
+    addIdea(newShape);
 });
 
 document.getElementById("clearMap").addEventListener('click', function() {
@@ -207,4 +212,31 @@ document.getElementById("clearMap").addEventListener('click', function() {
     {
         clearMap();
     }
+});
+
+document.getElementById("connect").addEventListener('click', function() {
+    var ideas = ideaLayer.getChildren();
+    var selectedIdeas = new Array();
+    for (var i = 0 ; i  < ideas.length ; i++)
+    {
+        if (ideas[i].selected)
+        {
+            selectedIdeas.push(ideas[i]);
+        }
+    }
+    
+    for (var i = 0 ; i < selectedIdeas.length ; i++)
+    {
+        for(var j = 0 ; j < selectedIdeas.length ; j++)
+        {
+            if (i != j && selectedIdeas[i].ideaConnections.indexOf(selectedIdeas[j].getId()) < 0)
+            {
+                selectedIdeas[i].ideaConnections.push(selectedIdeas[j].getId());
+            }
+        }
+
+        redrawConnections(selectedIdeas[i].getId());
+    }
+
+    saveMap("test");
 });

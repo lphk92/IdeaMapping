@@ -10,12 +10,19 @@
             <input type="text" id="ideaText"> 
             <button id="addIdea">Add Idea</button>
 
-            <label>New Circle</label>
-            <input type="color" id="circleColor">
-            <button id="addCircle">Add Circle</button>
+            <label>New Shape</label>
+            <input type="color" id="shapeColor">
+            <select id="shape">
+                <option value=0>Circle</option>
+                <option value=3>Triangle</option>
+                <option value=4>Square</option>
+                <option value=5>Pentagon</option>
+                <option value=6>Hexagon</option>
+            </select>
+            <button id="addShape">Add Shape</button>
 
             <button id="clearMap">Clear Map</button>
-            <button id="connect">Connect</button>
+            <button id="connect">Connect Selected Ideas</button>
         </div>
         <div id="notes"></div>
         <div id="map"></div>
