@@ -12,16 +12,84 @@ stage.add(connectionLayer);
 
 connectionLayer.moveToBottom();
 
+function generateUniqueId()
+{
+    return (new Date()).getTime(); 
+}
+
+function saveMap(mapName)
+{
+    var ideas = ideaLayer.getChildren();
+
+    var currentMap = new Object();
+    currentMap.name = mapName;
+    currentMap.ideaAttrs = new Array();
+    
+    for (var i = 0 ; i < ideas.length ; i++)
+    {
+        currentMap.ideaAttrs.push(ideas[i].getAttrs());
+        currentMap[ideas[i].getId()] = ideas[i].ideaConnections;
+    }
+
+    localStorage[mapName] = JSON.stringify(currentMap);
+    alert("Save Successful");
+}
+
+function loadMap(mapName)
+{
+    if (localStorage[mapName])
+    {
+        ideaLayer.removeChildren();
+        ideaLayer.clear();
+
+        connectionLayer.removeChildren();
+        connectionLayer.clear();
+
+        var map = JSON.parse(localStorage[mapName]);
+        for (var i = 0 ; i < map.ideaAttrs.length ; i++)
+        {
+            var idea;
+            var type = map.ideaAttrs[i].name;
+            if (type == "circle")
+            {
+                idea = generateCircleFromConfig(map.ideaAttrs[i]); 
+            }
+            else if (type == "text")
+            {
+                idea = generateTextFromConfig(map.ideaAttrs[i]); 
+            }
+
+            idea.ideaConnections = map[idea.getId()];
+            addIdea(idea);
+        }
+        
+        ideaLayer.draw();
+
+        var ideas = ideaLayer.getChildren();
+        for (var i = 0 ; i < ideas.length ; i++)
+        {
+            redrawConnections(ideas[i].getId());
+        }
+    }
+    else
+    {
+        alert("Map with name \"" + mapName + "\" could not be found.");
+    }
+}
+
 function redrawConnections(shapeId)
 {
     var idea = ideaLayer.get("#" + shapeId)[0];
 
     if (idea)
     {
-        for (var i = 0 ; i < idea.ideaConnections.length ; i++)
+        if (idea.ideaConnections)
         {
-            var otherIdeaId = idea.ideaConnections[i];
-            drawConnection(idea.getId(), otherIdeaId);
+            for (var i = 0 ; i < idea.ideaConnections.length ; i++)
+            {
+                var otherIdeaId = idea.ideaConnections[i];
+                drawConnection(idea.getId(), otherIdeaId);
+            }
         }
     }
     else
@@ -30,92 +98,10 @@ function redrawConnections(shapeId)
     }
 }
 
-function getShape(shapeId, layer)
-{
-    return layer.get("#" + shapeId)[0];
-}
-
-var ideaGlow = {
-        color: 'blue',
-        blur: 40,
-        offset: [0, 0],
-        opacity: 1.0
-        };
-
-var connectionGlow = {
-        color: 'red',
-        blur: 20,
-        offset: [0, 0],
-        opacity: 1.0
-        };
-
-function generateCircle(shapeId, color)
-{
-    var circle = new Kinetic.Circle({
-        id: shapeId,
-        x: Math.random() * 700 + 50,
-        y: Math.random() * 500 + 50,
-        radius: 48,
-        fill: color,
-        stroke: 'black',
-        strokeWidth: 2,
-        draggable: true
-    });
-
-    circle.on("dragmove", function() { redrawConnections(shapeId); });
-    circle.on("mouseenter", function() { this.setShadow(ideaGlow); ideaLayer.draw(); });
-    circle.on("mouseleave", function() { this.attrs.shadow = null; ideaLayer.draw(); });
-
-    return circle;
-}
-
-function generateText(shapeId, textString)
-{
-    var text = new Kinetic.Text({
-        id: shapeId,
-        x: Math.random() * 700 + 50,
-        y: Math.random() * 500 + 50,
-        text: textString,
-        textFill: 'black',
-        fill: 'white',
-        fontFamily: 'Arial',
-        fontSize: 24,
-        padding: 8,
-        cornerRadius: 8,
-        stroke: 'black',
-        strokeWidth: 2,
-        draggable: true
-    });
-
-    text.on("dragmove", function() { redrawConnections(shapeId); });
-    text.on("mouseenter", function() { this.setShadow(ideaGlow); ideaLayer.draw(); });
-    text.on("mouseleave", function() { this.attrs.shadow = null; ideaLayer.draw(); });
-    text.nonRadial = true;
-
-    return text;
-}
-
 function drawConnection(shapeId1, shapeId2)
-{
+{    
     var shape1 = stage.get('#' + shapeId1)[0];
     var shape2 = stage.get('#' + shapeId2)[0];
-
-    var shape1x = shape1.getPosition().x;
-    var shape1y = shape1.getPosition().y;
-
-    var shape2x = shape2.getPosition().x;
-    var shape2y = shape2.getPosition().y;
-
-    if (shape1.nonRadial)
-    {
-        shape1x = shape1x + shape1.getWidth()/2;
-        shape1y = shape1y + shape1.getHeight()/2;
-    }
-    if (shape2.nonRadial)
-    {
-        shape2x = shape2x + shape2.getWidth()/2;
-        shape2y = shape2y + shape2.getHeight()/2;
-    }
 
     var line = stage.get('#' + shapeId1 + "-" + shapeId2)[0];
     if (line)
@@ -129,49 +115,89 @@ function drawConnection(shapeId1, shapeId2)
         {
             line.remove();
         }
-    }
+    }    
+    
+    line = generateConnection(shape1, shape2);
 
-    var connectionId = shapeId1 + "-" + shapeId2;
-    line = new Kinetic.Line({
-        id: connectionId,
-        points: [shape1x, shape1y, shape2x, shape2y],
-        stroke: 'black',
-        strokeWidth: 3
-    });
-
-    line.on("mouseenter", function() { this.setShadow(connectionGlow); connectionLayer.draw(); });
-    line.on("mouseleave", function() { this.attrs.shadow = null; connectionLayer.draw(); });
+    line.on("dblclick", function() { removeConnection(this.getId()); });
 
     connectionLayer.add(line);
     connectionLayer.draw();
 }
 
-function addIdea(title, shape)
+function removeConnection(connectionId)
+{
+    var ideaId1 = connectionId.split('-')[0];
+    var ideaId2 = connectionId.split('-')[1];
+
+    var idea1 = ideaLayer.get('#' + ideaId1)[0];
+    var idea2 = ideaLayer.get('#' + ideaId2)[0];
+
+    for (var i = 0 ; i < idea1.ideaConnections.length ; i++)
+    {
+        if (idea1.ideaConnections[i] == ideaId2)
+        {
+            idea1.ideaConnections.splice(i, 1);
+            break;
+        }
+    }
+
+    for (var i = 0 ; i < idea2.ideaConnections.length ; i++)
+    {
+        if (idea2.ideaConnections[i] == ideaId1)
+        {
+            idea2.ideaConnections.splice(i, i);
+            break;
+        }
+    }
+
+    connectionLayer.get('#' + connectionId)[0].remove();
+    connectionLayer.draw();
+}
+
+function addIdea(shape)
 {
     ideaLayer.add(shape);
     ideaLayer.draw();
 
-    shape.ideaTitle = title;
-    shape.ideaConnections = new Array();
-    shape.ideaConnections[0] = shape.getId();
-
-    var allIdeas = ideaLayer.getChildren();
-    for (var i = 0 ; i < allIdeas.length ; i++)
+    if (!shape.ideaConnections)
     {
-        var idea = allIdeas[i];
+        shape.ideaConnections = new Array();
 
-        idea.ideaConnections[idea.ideaConnections.length] = shape.getId();
-        shape.ideaConnections[shape.ideaConnections.length] = idea.getId();
+        var allIdeas = ideaLayer.getChildren();
+        for (var i = 0 ; i < allIdeas.length ; i++)
+        {
+            var idea = allIdeas[i];
 
-        drawConnection(shape.getId(), idea.getId());
+            if (idea.getId() != shape.getId())
+            {
+                idea.ideaConnections[idea.ideaConnections.length] = shape.getId();
+                shape.ideaConnections[shape.ideaConnections.length] = idea.getId();
+
+                drawConnection(shape.getId(), idea.getId());
+            }
+        }
     }
 }
 
-addIdea("Jim", generateText("jim", "Jim"));
-addIdea("Red Idea", generateCircle('red', 'red'));
-addIdea("Green Idea", generateCircle('green', 'green'));
-addIdea("Blue Idea", generateCircle('blue', 'blue'));
-addIdea("Orange Idea", generateCircle('orange', 'orange'));
-addIdea("Purple Idea", generateCircle('purple', 'purple'));
-addIdea("White Idea", generateCircle('white', 'white'));
-addIdea("Black Idea", generateCircle('black', 'black'));
+loadMap("test");
+
+document.getElementById("addIdea").addEventListener('click', function() {
+    var text = document.getElementById("ideaText").value;
+    var newIdea = generateText(generateUniqueId(), text);
+    addIdea(newIdea); 
+});
+
+document.getElementById("addCircle").addEventListener('click', function() {
+    var color = document.getElementById("circleColor").value;
+    var newCircle = generateCircle(generateUniqueId(), color);
+    addIdea(newCircle);
+});
+
+document.getElementById("clearMap").addEventListener('click', function() {
+    //TODO: Write function for clearing the map
+});
+
+document.getElementById("saveMap").addEventListener('click', function() {
+    saveMap("test");
+});
