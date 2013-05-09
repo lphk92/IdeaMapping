@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <title>Non-standard Idea Mapping</title>
+        <link rel="stylesheet" type="text/css" href="index.css" /> 
+    </head>
+
+    <body>
+        <div id="inputs">
+            <label>New Idea</label>
+            <input type="text" id="ideaText"> 
+            <button id="addIdea">Add Idea</button>
+
+            <label>New Shape</label>
+            <input type="color" id="shapeColor">
+            <select id="shape">
+                <option value=0>Circle</option>
+                <option value=3>Triangle</option>
+                <option value=4>Square</option>
+                <option value=5>Pentagon</option>
+                <option value=6>Hexagon</option>
+                <option value=14>4-Star</option>
+                <option value=15>5-Star</option>
+                <option value=16>6-Star</option>
+            </select>
+            <button id="addShape">Add Shape</button>
+
+            <button id="clearMap">Clear Map</button>
+            <button id="connectIdeas">Connect Selected Ideas</button>
+            <!--<button id="removeIdeas">Remove Selected Ideas</button>-->
+        </div>
+        <div id="notes"></div>
+        <div id="map"></div>
+    </body>
+
+    <script src="kinetic.js" type="text/javascript"></script>
+    <script src="generators.js" type="text/javascript"></script>
+    <script src="main.js" type="text/javascript"></script>
+
+</html>
