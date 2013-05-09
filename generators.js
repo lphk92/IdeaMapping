@@ -26,6 +26,14 @@ var nullGlow = {
         opacity: 0.01
         };
 
+function setShadow(shape, shadow)
+{
+    shape.setShadowColor(shadow.color);
+    shape.setShadowBlur(shadow.blur);
+    shape.setShadowOffset(shadow.offset);
+    shape.setShadowOpacity(shadow.opacity);
+}
+
 function generateCircle(shapeId, color)
 {
     return generateCircleFromConfig({
@@ -98,28 +106,28 @@ function generateStar(shapeId, color, points)
 function generateCircleFromConfig(config)
 {
     var circle = applyEventHandlers(new Kinetic.Circle(config));
-    circle.setShadow(nullGlow);
+    setShadow(circle, nullGlow);
     return circle;
 }
 
 function generateTextFromConfig(config)
 {
     var text = applyEventHandlers(new Kinetic.Text(config));
-    text.setShadow(nullGlow);
+    setShadow(text, nullGlow);
     return text;
 }
 
 function generatePolygonFromConfig(config)
 {
     var polygon = applyEventHandlers(new Kinetic.RegularPolygon(config));
-    polygon.setShadow(nullGlow);
+    setShadow(polygon, nullGlow);
     return polygon;
 }
 
 function generateStarFromConfig(config)
 {
     var star = applyEventHandlers(new Kinetic.Star(config));
-    star.setShadow(nullGlow);
+    setShadow(star, nullGlow);
     return star;
 }
 
@@ -147,11 +155,11 @@ function generateConnection(shape1, shape2)
         id: connectionId,
         points: [shape1x, shape1y, shape2x, shape2y],
         stroke: 'black',
-        strokeWidth: 3
+        strokeWidth: 5
     });
     
-    line.on("mouseenter", function() { this.setShadow(connectionGlow); connectionLayer.draw(); });
-    line.on("mouseleave", function() { this.setShadow(nullGlow); connectionLayer.draw(); });
+    line.on("mouseenter", function() { setShadow(this, connectionGlow); connectionLayer.draw(); });
+    line.on("mouseleave", function() { setShadow(this, nullGlow); connectionLayer.draw(); });
     
     return line;
 }
@@ -160,11 +168,11 @@ function applyEventHandlers(shape)
 {
     shape.on("dragmove", function() { redrawConnections(this.getId()); });
     shape.on("dragend", function() { saveMap("test"); });
-    shape.on("mouseenter", function() { this.setShadow(ideaGlow); ideaLayer.draw(); });
-    shape.on("mouseleave", function() { this.setShadow(this.selected ? selectedGlow : nullGlow); ideaLayer.draw(); });    
-    shape.on("click", function() {
+    shape.on("mouseenter", function() { setShadow(this, ideaGlow); ideaLayer.draw(); });
+    shape.on("mouseleave", function() { setShadow(this, this.selected ? selectedGlow : nullGlow); ideaLayer.draw(); });    
+    shape.on("dblclick", function() {
         shape.selected = !shape.selected;
-        shape.setShadow(shape.selected ? selectedGlow : nullGlow);
+        setShadow(shape, shape.selected ? selectedGlow : nullGlow);
         });
     
     return shape;
