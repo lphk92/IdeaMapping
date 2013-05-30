@@ -57,14 +57,12 @@ function generateText(shapeId, textString)
         x: Math.random() * 700 + 50,
         y: Math.random() * 500 + 50,
         text: textString,
-        textFill: 'black',
         fill: 'white',
         fontFamily: 'Arial',
-        fontSize: 24,
-        padding: 8,
-        cornerRadius: 8,
+        fontSize: 40,
+        fontStyle: 'bold',
         stroke: 'black',
-        strokeWidth: 2,
+        strokeWidth: 1,
         draggable: true
     });
 }
