@@ -54,21 +54,9 @@ function loadMap(mapName)
         {
             var idea;
             var type = map.ideaAttrs[i].name;
-            if (type == "circle")
-            {
-                idea = generateCircleFromConfig(map.ideaAttrs[i]); 
-            }
-            else if (type == "text")
+            if (type == "text")
             {
                 idea = generateTextFromConfig(map.ideaAttrs[i]); 
-            }
-            else if (type == "polygon")
-            {
-                idea = generatePolygonFromConfig(map.ideaAttrs[i]);
-            }
-            else if (type == "star")
-            {
-                idea = generateStarFromConfig(map.ideaAttrs[i]);
             }
 
             idea.ideaConnections = map[idea.getId()];
@@ -170,6 +158,7 @@ function removeConnection(connectionId)
 function addIdea(shape)
 {
     shape.selected = false;
+    shape.on("dragmove", function() { redrawConnections(this.getId()); });
 
     ideaLayer.add(shape);
     ideaLayer.draw();
@@ -200,27 +189,6 @@ document.getElementById("addIdea").addEventListener('click', function() {
     var text = document.getElementById("ideaText").value;
     var newIdea = generateText(generateUniqueId(), text);
     addIdea(newIdea); 
-});
-
-document.getElementById("addShape").addEventListener('click', function() {
-    var shapeType = document.getElementById("shape").value;
-    var color = document.getElementById("shapeColor").value;
-
-    var newShape;
-    if (shapeType == 0)
-    {
-        newShape = generateCircle(generateUniqueId(), color);
-    }
-    else if (shapeType < 10)
-    {
-        newShape = generatePolygon(generateUniqueId(), color, shapeType);
-    }
-    else if (shapeType > 10)
-    {
-        newShape = generateStar(generateUniqueId(), color, shapeType%10);
-    }
-
-    addIdea(newShape);
 });
 
 document.getElementById("clearMap").addEventListener('click', function() {
