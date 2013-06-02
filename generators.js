@@ -61,38 +61,41 @@ function generateTextFromConfig(config)
 
 function generateConnection(uniqueId, shape1, shape2)
 {
-    var shape1x = shape1.getPosition().x;
-    var shape1y = shape1.getPosition().y;
+    var coords1 = findMiddle(shape1);
+    var coords2 = findMiddle(shape2);
 
-    var shape2x = shape2.getPosition().x;
-    var shape2y = shape2.getPosition().y;
-
-    if (!shape1.attrs.radius)
-    {
-        shape1x = shape1x + shape1.getWidth()/2;
-        shape1y = shape1y + shape1.getHeight()/2;
-    }
-    if (!shape2.attrs.radius)
-    {
-        shape2x = shape2x + shape2.getWidth()/2;
-        shape2y = shape2y + shape2.getHeight()/2;
-    }
+    var line = new Kinetic.Line({
+        id: uniqueId,
+        points: coords1.concat(coords2),
+        stroke: 'black',
+        strokeWidth: 8 
+    });
 
     //NOTE: We are giving the connection the id's of the two ideas
     //      that is connected to, for removing the connection later
-    var line = new Kinetic.Line({
-        id: uniqueId,
-        idea1: shape1.getId(),
-        idea2: shape2.getId(),
-        points: [shape1x, shape1y, shape2x, shape2y],
-        stroke: 'black',
-        strokeWidth: 5 
-    });
+    line.idea1 = shape1.getId();
+    line.idea2 = shape2.getId();
     
     line.on("mouseenter", function() { setShadow(this, connectionGlow); connectionLayer.draw(); });
     line.on("mouseleave", function() { setShadow(this, nullGlow); connectionLayer.draw(); });
     
     return line;
+}
+
+function updateConnection(connection, shape1, shape2)
+{
+    connection.points = findMiddle(shape1).concat(findMiddle(shape2)); 
+}
+
+function findMiddle(shape)
+{
+    var shapex = shape.getPosition().x;
+    var shapey = shape.getPosition().y;
+
+    shapex = shapex + shape.getWidth()/2;
+    shapey = shapey + shape.getHeight()/2;
+    
+    return [shapex, shapey];
 }
 
 function applyShadowHandlers(shape)

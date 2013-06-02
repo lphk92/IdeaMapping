@@ -83,6 +83,25 @@ function redrawConnections(shapeId)
 
     if (idea)
     {
+        // Remove connections attached to the given shape
+        var connectionIds = new Array();
+        for (var i = 0 ; i < connectionLayer.children.length ; i++)
+        {
+            var curr = connectionLayer.children[i];
+            if(curr.idea1 == shapeId || curr.idea2 == shapeId)
+            {
+                //updateConnection(curr, ideaLayer.get("#" + curr.idea1), ideaLayer.get("#" + curr.idea1));
+                //connectionLayer.draw();
+                connectionIds.push(connectionLayer.children[i].getId());
+            }
+        }
+        for (var i = 0 ; i < connectionIds.length ; i++)
+        {
+            connectionLayer.get("#" + connectionIds[i])[0].remove();
+        }
+
+        
+        // Re-add all of the connections
         if (idea.ideaConnections)
         {
             for (var i = 0 ; i < idea.ideaConnections.length ; i++)
@@ -91,6 +110,7 @@ function redrawConnections(shapeId)
                 drawConnection(idea.getId(), otherIdeaId);
             }
         }
+        
     }
     else
     {
@@ -103,23 +123,9 @@ function drawConnection(shapeId1, shapeId2)
     var shape1 = stage.get('#' + shapeId1)[0];
     var shape2 = stage.get('#' + shapeId2)[0];
 
-    var line = stage.get('#' + shapeId1 + "-" + shapeId2)[0];
-    if (line)
-    {
-        line.remove();
-    }
-    else
-    {
-        line = stage.get('#' + shapeId2 + "-" + shapeId1)[0];
-        if (line)
-        {
-            line.remove();
-        }
-    }    
-    
-    line = generateConnection(shape1, shape2);
+    line = generateConnection(generateUniqueId(), shape1, shape2);
 
-    line.on("dblclick", function() { removeConnection(this.getId()); saveMap("test"); });
+    line.on("dblclick", function() { removeConnection(this.getId()); });
 
     connectionLayer.add(line);
     connectionLayer.draw();
@@ -127,8 +133,10 @@ function drawConnection(shapeId1, shapeId2)
 
 function removeConnection(connectionId)
 {
-    var ideaId1 = connectionId.split('-')[0];
-    var ideaId2 = connectionId.split('-')[1];
+    var connection = connectionLayer.get('#' + connectionId)[0];
+    
+    var ideaId1 = connection.idea1;
+    var ideaId2 = connection.idea2;
 
     var idea1 = ideaLayer.get('#' + ideaId1)[0];
     var idea2 = ideaLayer.get('#' + ideaId2)[0];
@@ -151,7 +159,7 @@ function removeConnection(connectionId)
         }
     }
 
-    connectionLayer.get('#' + connectionId)[0].remove();
+    connection.remove();
     connectionLayer.draw();
 }
 
@@ -181,10 +189,11 @@ function addIdea(shape)
             }
         }
     }
-
-    saveMap("test");
 }
 
+document.getElementById("saveMap").addEventListener('click', function() {
+    saveMap("test");
+});
 document.getElementById("addIdea").addEventListener('click', function() {
     var text = document.getElementById("ideaText").value;
     var newIdea = generateText(generateUniqueId(), text);
@@ -195,7 +204,6 @@ document.getElementById("clearMap").addEventListener('click', function() {
     if(confirm("Are you sure you would like to clear the current map? You will be unable to reverse this operation"))
     {
         clearMap();
-        saveMap("test");
     }
 });
 
@@ -222,8 +230,6 @@ document.getElementById("connectIdeas").addEventListener('click', function() {
 
         redrawConnections(selectedIdeas[i].getId());
     }
-
-    saveMap("test");
 });
 
 loadMap("test");
