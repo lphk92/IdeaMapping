@@ -99,7 +99,6 @@ function redrawConnections(shapeId)
         {
             connectionLayer.get("#" + connectionIds[i])[0].remove();
         }
-
         
         // Re-add all of the connections
         if (idea.ideaConnections)
