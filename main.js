@@ -32,6 +32,7 @@ function saveMap(mapName)
     }
 
     localStorage[mapName] = JSON.stringify(currentMap);
+    alert("Map Saved!");
 }
 
 function clearMap()
@@ -229,6 +230,18 @@ document.getElementById("connectIdeas").addEventListener('click', function() {
 
         redrawConnections(selectedIdeas[i].getId());
     }
+
+    for (var i = 0 ; i  < selectedIdeas.length ; i++)
+    {
+        // Manually fire a double-click to change the shadow on the idea
+        selectedIdeas[i].fire("dblclick");
+    }
+    ideaLayer.draw();
+});
+
+document.getElementById("editConnections").addEventListener('click', function() {
+    // TODO: Implement editing of connections
+    alert("This has yet to be done...");
 });
 
 loadMap("test");
