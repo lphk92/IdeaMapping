@@ -1,0 +1,29 @@
+body
+{
+    margin: 0;
+    padding: 0;
+}
+.dragme
+{
+    position:relative;
+    /*width: 270px;
+    height: 203px;*/
+    cursor: move;
+}
+#region
+{
+    background-color: blue;
+    border: 1px solid black;
+    position: relative;
+    left: 50px;
+    top: 20px;
+    width: 700px;
+    height: 500px;
+    float: left;
+}
+#draggable 
+{
+    background-color: #ccc;
+    width: 500px;
+    border: 1px solid #000;
+}
