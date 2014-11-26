@@ -20,6 +20,12 @@ body
     width: 700px;
     height: 500px;
     float: left;
+    perspective: 600px;
+}
+img#flower
+{
+    width: 200px;
+    transform: rotateY(45deg);
 }
 #draggable 
 {
