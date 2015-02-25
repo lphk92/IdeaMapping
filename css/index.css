@@ -1,0 +1,21 @@
+div.idea
+{
+    font-size: 28px;
+    padding: 10px;
+    background-color: green;
+    position: absolute;
+    z-index: 2;
+}
+
+div.line
+{
+    height: 3px;
+    border: solid thin red;
+    position: absolute;
+    z-index: 1;
+}
+
+div.line:hover
+{
+    border: solid thin blue;
+}
