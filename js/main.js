@@ -1,11 +1,19 @@
-$(document).ready(function()
-{
-    var connectionMap = {};
-    connectionMap['1'] = ['2', '3'];
-    connectionMap['2'] = ['1'];
-    connectionMap['3'] = ['1'];
+var connectionMap = new Map();
 
-    $(".idea").draggable({ scroll: true, cursor: "move"},
+var last = 1
+function genId()
+{
+    //return Date.now();
+    return last++;
+}
+
+function createIdeaElement(id, value)
+{
+    idea = document.createElement("div");
+    idea.id = id; 
+    idea.classList.add("idea");
+    idea.innerHTML = value;
+    $(idea).draggable({ scroll: true, cursor: "move"},
     {
         drag: function(event, ui)
         {
@@ -46,6 +54,45 @@ $(document).ready(function()
                     line.css({'transform': 'rotate(' + angle + 'deg)'});
                 }
             }
+        }
+    });
+    return idea;
+}
+
+function createLineElement(id1, id2)
+{
+    var line = document.createElement("div");
+    line.id = id1 < id2 ? id1+"-"+id2 : id2+"-"+id1;
+    console.log("creating line with id " + line.id);
+    line.classList.add("line");
+    return line;
+}
+
+function addIdea(value)
+{
+    var id = genId();
+    var ideaDiv = createIdeaElement(id, value);
+    $("body").append(ideaDiv);
+
+    var c = []
+    for (var key in connectionMap)
+    {
+        connectionMap[key].push(id);
+        c.push(key);
+        var lineDiv = createLineElement(id, key);
+        $("body").append(lineDiv);
+    }
+    connectionMap[id] = c
+}
+
+$(document).ready(function()
+{
+    $("#add").click(function()
+    {
+        var val = $("#add-value").val();
+        if (val.length > 0)
+        {
+            addIdea(val);
         }
     });
 });

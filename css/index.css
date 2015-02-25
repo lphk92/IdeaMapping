@@ -1,3 +1,17 @@
+body
+{
+    margin-top: 40px;
+}
+
+header
+{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background: gray;
+}
+
 div.idea
 {
     font-size: 28px;
@@ -5,6 +19,7 @@ div.idea
     background-color: green;
     position: absolute;
     z-index: 2;
+    display: inline-block;
 }
 
 div.line
