@@ -12,14 +12,49 @@ header
     background: gray;
 }
 
+div#container
+{
+    padding: 2px;
+    width: 500px;
+    height: 500px;
+    border: 1px solid gray;
+    position: relative
+    -webkit-perspective: 600px;
+    perspective: 600px;
+}
+
+div#map
+{
+    width: 300px;
+    height: 300px
+    border: 1px solid blue;
+    transform-style: preserve-3d;
+}
+
 div.idea
 {
+    height: 50px;
+    width: 50px;
     font-size: 28px;
     padding: 10px;
-    background-color: green;
     position: absolute;
     z-index: 2;
-    display: inline-block;
+    display: block;
+    background-color: hsla(120, 100%, 50%, 0.7);
+    line-height: 50px;
+    text-align: center;
+}
+
+.spinning
+{
+    -webkit-animation: spinCubeWebkit 8s infinite ease-in-out;
+    animation: spinCube       8s infinite ease-in-out;
+} 
+
+@-webkit-keyframes spinCubeWebkit
+{
+        0% { -webkit-transform: translateZ( -100px ) rotateX(   0deg ) rotateY(   0deg ); }
+      100% { -webkit-transform: translateZ( -100px ) rotateX( 360deg ) rotateY( 360deg ); }
 }
 
 div.line

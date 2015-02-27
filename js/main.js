@@ -4,6 +4,7 @@ var last = 1
 function genId()
 {
     //return Date.now();
+    return "one";
     return last++;
 }
 
@@ -72,7 +73,7 @@ function addIdea(value)
 {
     var id = genId();
     var ideaDiv = createIdeaElement(id, value);
-    $("body").append(ideaDiv);
+    $("#map").append(ideaDiv);
 
     var c = []
     for (var key in connectionMap)
@@ -80,7 +81,7 @@ function addIdea(value)
         connectionMap[key].push(id);
         c.push(key);
         var lineDiv = createLineElement(id, key);
-        $("body").append(lineDiv);
+        $("#map").append(lineDiv);
     }
     connectionMap[id] = c
 }
@@ -93,6 +94,14 @@ $(document).ready(function()
         if (val.length > 0)
         {
             addIdea(val);
+        }
+    });
+
+    $("#transform").click(function()
+    {
+        for (var key in connectionMap)
+        {
+            $("#"+key).animate({ translateZ: '50px' }, 1000);
         }
     });
 });
