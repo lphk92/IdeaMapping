@@ -1,12 +1,6 @@
 var connectionMap = new Map();
 var transformed = false;
 
-var last = 1
-function genId()
-{
-    return last++;
-}
-
 function createIdeaElement(id, value)
 {
     idea = document.createElement("div");
@@ -65,6 +59,12 @@ function createLineElement(id1, id2)
     line.id = id1 < id2 ? id1+"-"+id2 : id2+"-"+id1;
     console.log("creating line with id " + line.id);
     line.classList.add("line");
+    $(line).dblclick(function()
+    {
+        removeItem(connectionMap[id1], id2)
+        removeItem(connectionMap[id2], id1)
+        $(this).remove();
+    });
     return line;
 }
 
@@ -102,7 +102,7 @@ $(document).ready(function()
         {
             $(".idea").each(function()
             {
-                $(this).css("transform", "translateZ(" + $(this).offset().left + "px)");    
+                $(this).css("transform", "rotateZ(" + $(this).offset().left + "deg)");    
             });
         }
         else
@@ -121,6 +121,11 @@ $(document).ready(function()
         $(".idea").each(function()
         {
             $(this).toggleClass("spinIdea");
+        });
+        $(".line").each(function()
+        {
+            //$(this).css("transform", "translateZ(-1px)");
+            applyTransform(this, "translateZ", "-10px");
         });
     });
 });

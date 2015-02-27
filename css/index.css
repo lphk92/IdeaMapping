@@ -32,19 +32,6 @@ div#map
     transform-style: preserve-3d;
 }
 
-div.idea
-{
-    height: 50px;
-    font-size: 28px;
-    padding: 10px;
-    position: absolute;
-    z-index: 2;
-    display: inline-block;
-    background-color: hsla(120, 100%, 50%, 0.7);
-    line-height: 50px;
-    text-align: center;
-}
-
 .spinMap
 {
     -webkit-animation: spinMapWebkit 8s infinite ease-in-out;
@@ -68,6 +55,24 @@ div.idea
 {
         0% { -webkit-transform: rotateX(   0deg ) rotateY(0deg); }
       100% { -webkit-transform: rotateX( 360deg ) rotateY(360deg); }
+}
+
+div.idea
+{
+    height: 50px;
+    font-size: 28px;
+    padding: 10px;
+    position: absolute;
+    z-index: 2;
+    display: inline-block;
+    background-color: hsla(120, 100%, 50%, 1.0);
+    line-height: 50px;
+    text-align: center;
+}
+
+div.idea:hover
+{
+    background-color: hsla(200, 100%, 50%, 1.0);
 }
 
 div.line
