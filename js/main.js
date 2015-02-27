@@ -1,10 +1,9 @@
 var connectionMap = new Map();
+var transformed = false;
 
 var last = 1
 function genId()
 {
-    //return Date.now();
-    return "one";
     return last++;
 }
 
@@ -50,9 +49,9 @@ function createIdeaElement(id, value)
                         x1 = x1 - (x1-x2);
                     }
 
+                    line.css({'transform': 'rotate(' + angle + 'deg)'});
                     line.offset({top: y1, left: x1});
                     line.width(dist);
-                    line.css({'transform': 'rotate(' + angle + 'deg)'});
                 }
             }
         }
@@ -99,9 +98,29 @@ $(document).ready(function()
 
     $("#transform").click(function()
     {
-        for (var key in connectionMap)
+        if (!transformed)
         {
-            $("#"+key).animate({ translateZ: '50px' }, 1000);
+            $(".idea").each(function()
+            {
+                $(this).css("transform", "translateZ(" + $(this).offset().left + "px)");    
+            });
         }
+        else
+        {
+            $(".idea").each(function()
+            {
+                $(this).css("transform", "");
+            });
+        }
+        transformed = !transformed;
+    });
+
+    $("#spin").click(function()
+    {
+        $("#map").toggleClass("spinMap");
+        $(".idea").each(function()
+        {
+            $(this).toggleClass("spinIdea");
+        });
     });
 });

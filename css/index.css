@@ -1,6 +1,6 @@
 body
 {
-    margin-top: 40px;
+    margin: 40px 20px 20px 20px;
 }
 
 header
@@ -15,18 +15,19 @@ header
 div#container
 {
     padding: 2px;
-    width: 500px;
-    height: 500px;
+    width: 100%;
+    height: 100%;
     border: 1px solid gray;
     position: relative
-    -webkit-perspective: 600px;
-    perspective: 600px;
+    perspective: 1600px;
+    perspective-origin: 50% 50%;
 }
 
 div#map
 {
-    width: 300px;
-    height: 300px
+    margin: 20px auto;
+    width: 50%;
+    height: 80%;
     border: 1px solid blue;
     transform-style: preserve-3d;
 }
@@ -34,27 +35,39 @@ div#map
 div.idea
 {
     height: 50px;
-    width: 50px;
     font-size: 28px;
     padding: 10px;
     position: absolute;
     z-index: 2;
-    display: block;
+    display: inline-block;
     background-color: hsla(120, 100%, 50%, 0.7);
     line-height: 50px;
     text-align: center;
 }
 
-.spinning
+.spinMap
 {
-    -webkit-animation: spinCubeWebkit 8s infinite ease-in-out;
-    animation: spinCube       8s infinite ease-in-out;
+    -webkit-animation: spinMapWebkit 8s infinite ease-in-out;
 } 
 
-@-webkit-keyframes spinCubeWebkit
+.spinIdea
 {
-        0% { -webkit-transform: translateZ( -100px ) rotateX(   0deg ) rotateY(   0deg ); }
-      100% { -webkit-transform: translateZ( -100px ) rotateX( 360deg ) rotateY( 360deg ); }
+    -webkit-animation: spinIdea 8s infinite ease-in-out;
+}
+
+@-webkit-keyframes spinIdea
+{
+        0% { -webkit-transform: rotateX(    0deg ) rotateY(    0deg ); }
+       25% { -webkit-transform: rotateX(  -90deg ) rotateY(  -90deg ); }
+       50% { -webkit-transform: rotateX( -180deg ) rotateY( -180deg ); }
+       75% { -webkit-transform: rotateX( -270deg ) rotateY( -270deg ); }
+      100% { -webkit-transform: rotateX( -360deg ) rotateY( -360deg ); }
+}
+
+@-webkit-keyframes spinMapWebkit
+{
+        0% { -webkit-transform: rotateX(   0deg ) rotateY(0deg); }
+      100% { -webkit-transform: rotateX( 360deg ) rotateY(360deg); }
 }
 
 div.line
